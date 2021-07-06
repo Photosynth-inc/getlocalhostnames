@@ -4,36 +4,40 @@ import (
 	"fmt"
 	"os/exec"
 	"sync"
+	"time"
 )
 
-func doSomething(u int) {
+const (
+	DIG_SLEEP = 1000
+	QUEUE_WAIT = 200
+)
 
-	str := fmt.Sprintf("192.168.101.%d", u)
-	out, err := exec.Command("dig", "+short", "+time=1", "+tries=1", "-x", str, "@224.0.0.251", "-p", "5353").Output()
-	if err != nil {
-		//log.Printf("Exec fail: %v", err)
-	} else {
-		fmt.Printf("%s\t%s", str, string(out))
-	}
-	// dig -x ip @224.0.0.251 -p 5353
-	//time.Sleep(2 * time.Second)
+func dig(ip string, verbose bool) {
+	out, err := exec.Command("dig", "+short", "+time=1", "+tries=1", "-x", ip, "@224.0.0.251", "-p", "5353").Output()
+	if err != nil && verbose {
+		fmt.Printf("%s\tFailed: %v", err)
+	} 
+
+	fmt.Printf("%s\t%s", ip, string(out))
+	time.Sleep(DIG_SLEEP * time.Millisecond)
 }
 
 func main() {
-
 	limit := make(chan struct{}, 50)
+	verbose := false
 
 	var wg sync.WaitGroup
 	for i := 1; i < 255; i++ {
-		ii := i
+		ip := fmt.Sprintf("192.168.101.%d", i)
+
 		wg.Add(1)
 		go func() {
 			limit <- struct{}{}
 			defer wg.Done()
-			doSomething(ii)
+			dig(ip, verbose)
 			<-limit
 		}()
-		//time.Sleep(200 * time.Millisecond)
+		time.Sleep(QUEUE_WAIT * time.Millisecond)
 	}
 	wg.Wait()
 }
