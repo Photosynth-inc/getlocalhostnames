@@ -17,10 +17,12 @@ const HELP_TEXT = "reverse lookup `.local` hostnames. Usage:\n    go run main.go
 
 func dig(ip string, verbose bool) {
 	out, err := exec.Command("dig", "+short", "+time=1", "+tries=1", "-x", ip, "@224.0.0.251", "-p", "5353").Output()
-	if err != nil && verbose {
-		fmt.Printf("%s\tFailed: %s\n", ip, err)
+	if err != nil {
+		if verbose {
+			fmt.Printf("%s\tFailed: %s\n", ip, err)
+		}
 		return
-	} 
+	}
 
 	fmt.Printf("%s\t%s", ip, string(out))
 	time.Sleep(DIG_SLEEP * time.Millisecond)
