@@ -8,13 +8,12 @@ import (
 
 func doSomething(u int) {
 
-	str := fmt.Sprintf("192.168.0.%d", u)
-	//fmt.Println(str)
+	str := fmt.Sprintf("192.168.101.%d", u)
 	out, err := exec.Command("dig", "+short", "+time=1", "+tries=1", "-x", str, "@224.0.0.251", "-p", "5353").Output()
 	if err != nil {
 		//log.Printf("Exec fail: %v", err)
 	} else {
-		fmt.Print(string(out))
+		fmt.Printf("%s\t%s", str, string(out))
 	}
 	// dig -x ip @224.0.0.251 -p 5353
 	//time.Sleep(2 * time.Second)
