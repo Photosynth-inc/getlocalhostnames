@@ -26,10 +26,12 @@ func dig(ip string, verbose bool) {
 
 func main() {
 	limit := make(chan struct{}, 50)
+
 	verbose := false
 	for _, v := range os.Args {
-		if v == "-v" {
-			verbose = true
+		switch v {
+			case "-v" :
+				verbose = true
 		}
 	}
 
