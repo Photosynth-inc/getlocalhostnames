@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	DIG_SLEEP = 1000
+	DIG_SLEEP  = 1000
 	QUEUE_WAIT = 200
 )
 
@@ -35,17 +35,17 @@ func main() {
 	verbose := false
 	for _, v := range os.Args {
 		switch v {
-			case "-v":
-				verbose = true
-			case "-h":
-				fmt.Println(HELP_TEXT)
-				return
-			case "-s":
-				segment = "selected"
-			default:
-				if segment == "selected" {
-					segment = v
-				}
+		case "-v":
+			verbose = true
+		case "-h":
+			fmt.Println(HELP_TEXT)
+			return
+		case "-s":
+			segment = "selected"
+		default:
+			if segment == "selected" {
+				segment = v
+			}
 		}
 	}
 
